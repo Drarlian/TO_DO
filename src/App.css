@@ -1,0 +1,50 @@
+.conteudo{
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.titulo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.div-tarefas{
+  display: flex;
+  flex-direction: column;
+  /* background-color: pink; */
+  justify-content: center;
+  /* align-items: start; */
+  width: 500px;
+  border-top: solid gray;
+  padding-top: 10px;
+}
+
+@media (max-width: 600px){
+  .div-tarefas{
+    width: 100%;
+  }
+
+  /* .input-tarefa{
+    width: 60%;
+  } */
+}
+
+.input-tarefa{
+  margin-bottom: 10px;
+  /* background-color: green; */
+  display: flex;
+}
+
+input{
+  border-radius: 5px;
+  /* width: inherit; Herda propriedade do pai */
+  flex: 1;
+  padding: 5px;
+  /* width: auto; */
+}
