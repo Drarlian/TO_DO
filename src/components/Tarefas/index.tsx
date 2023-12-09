@@ -4,12 +4,15 @@ import './style.css'
 
 function Tarefas() {
 
-    const {tasks} = useContext(TaskContext);
-
+    const {tasks, editaStatusTask} = useContext(TaskContext);
+    
     return (
     <div className='lista-tarefas'>
         {tasks.map((e) => (
-            <input type='checkbox'>{e.name}</input>
+            <label key={e.id} className='input-check' style={{textDecoration: e.status? 'line-through': 'none'}}>
+                <input type='checkbox' onChange={() => editaStatusTask(e.id)}></input>
+                {e.name}
+            </label>
         ))}
     </div>  
     )

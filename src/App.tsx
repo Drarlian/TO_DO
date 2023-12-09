@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import './App.css'
 import Tarefas from './components/Tarefas'
+import Input from './components/Input'
 
 function App() {
+  const [teste, setTeste] = useState<boolean>(true);
 
   return (
     <div className="conteudo">
@@ -11,7 +13,7 @@ function App() {
       </div>
       <div className='div-tarefas'>
         <div className='input-tarefa'>
-          <input placeholder='Adicione uma tarefa aqui...' className='teste-input'></input>
+          <Input value={teste} />
         </div>
         <Tarefas />
       </div>
