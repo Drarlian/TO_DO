@@ -16,8 +16,8 @@ function Tarefas() {
     return (
     <div className='lista-tarefas'>
         {tasks.map((e) => (
-            <div className='lista-elementos'>
-                <label key={e.id} className='input-check' style={{textDecoration: e.status? 'line-through': 'none'}}>
+            <div className='lista-elementos' key={e.id}>
+                <label  className='input-check' style={{textDecoration: e.status? 'line-through': 'none'}}>
                     <input type='checkbox' onChange={() => editaStatusTask(e.id)}></input>
                     {e.name}
                 </label>

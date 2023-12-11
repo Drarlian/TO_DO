@@ -1,4 +1,4 @@
-import {createContext, useState} from 'react';
+import {createContext, useState, useEffect} from 'react';
 import react, {ReactNode} from 'react';
 
 interface Props{
@@ -26,23 +26,7 @@ export type Task = {
 export const TaskContext = createContext({} as Props);
 
 export function TaskProvider({children}: TypeChildrenNode){
-    const [tasks, setTaks] = useState<Task[]>([
-        {
-            id: 1,
-            name: 'Comprar pão',
-            status: false,
-        },
-        {
-            id: 2,
-            name: 'Ir na academia',
-            status: false,
-        },
-        {
-            id: 3,
-            name: 'Estudar',
-            status: false,
-        }
-    ]); // Array de Objetos, onde cada objeto é uma tarefa.
+    const [tasks, setTaks] = useState<Task[]>(() => pegarLocal()); // Array de Objetos, onde cada objeto é uma tarefa.
 
     const [estadoInput, setEstadoInput] = useState<boolean>(true);  // Define se o Input vai estar em Modo Normal ou Modo de Edição.
     const [objInput, setObjInput] = useState<Task>({
@@ -51,10 +35,21 @@ export function TaskProvider({children}: TypeChildrenNode){
         status: false
     });  // Objeto contendo a tarefa que será editada no Input de Edição.
 
+    useEffect(() => {
+        salvarLocal();
+    }, [tasks]);
+
     function adicionaTask(name: string){
         //  Adiciona um tarefa ao array de tarefas.
 
-        const newId = tasks.length + 1
+        let newId;
+
+        if (tasks.length == 0){
+            newId = 1;
+        } else{
+            newId = tasks.slice(-1)[0].id + 1;
+        }
+
 
         const obj = {
             id: newId,
@@ -94,15 +89,31 @@ export function TaskProvider({children}: TypeChildrenNode){
         });
       }
 
-    function removeTask(id: number){
+    async function removeTask(id: number){
         // Remove uma tarefa baseada no id.
 
         if (!estadoInput && id === objInput.id){  
             // Troca de volta para o Input Normal caso esteja no Input de Edição e a tarefa removida foi a que está sendo editada.
             setEstadoInput(!estadoInput);
         }
-        const newObj = tasks.filter((tarefa) => tarefa.id != id);
+        const newObj = tasks.filter((tarefa) => tarefa.id !== id);
         setTaks(newObj);
+    }
+
+    function salvarLocal(){
+        // Salva as tarefas no LocalStorage.
+
+        localStorage.setItem('tarefas', JSON.stringify(tasks));
+    }
+
+    function pegarLocal(){
+        // Pega as tarefas salvas no LocalStorage.
+
+        let tarefasLocais = localStorage.getItem('tarefas');
+        if (tarefasLocais){
+            // console.log(tarefasLocais);
+            return JSON.parse(tarefasLocais);
+        }
     }
 
     return <TaskContext.Provider value={{tasks, estadoInput, setEstadoInput, objInput, setObjInput, adicionaTask, editaNameTask, editaStatusTask, removeTask}}>{children}</TaskContext.Provider>
