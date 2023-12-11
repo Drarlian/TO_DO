@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 import { TaskContext } from '../../contexts/TaskContext'
 import './style.css'
 import { Task } from '../../contexts/TaskContext';
@@ -17,8 +17,8 @@ function Tarefas() {
     <div className='lista-tarefas'>
         {tasks.map((e) => (
             <div className='lista-elementos' key={e.id}>
-                <label  className='input-check' style={{textDecoration: e.status? 'line-through': 'none'}}>
-                    <input type='checkbox' onChange={() => editaStatusTask(e.id)}></input>
+                <label className='input-check' style={{textDecoration: e.status? 'line-through': 'none'}}>
+                    <input type='checkbox' onChange={() => editaStatusTask(e.id)} checked={e.status}/>
                     {e.name}
                 </label>
                 <div className="lista-botoes">

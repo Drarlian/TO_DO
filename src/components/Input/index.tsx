@@ -1,5 +1,5 @@
 import './style.css'
-import {useContext, useState, KeyboardEvent, ChangeEvent} from 'react';
+import {useContext, useState, KeyboardEvent} from 'react';
 import { TaskContext } from '../../contexts/TaskContext';
 
 export function Input(){

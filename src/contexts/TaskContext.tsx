@@ -1,5 +1,6 @@
 import {createContext, useState, useEffect} from 'react';
-import react, {ReactNode} from 'react';
+import {ReactNode} from 'react';
+import { toast } from 'react-toastify';
 
 interface Props{
     tasks: Task[];
@@ -58,6 +59,8 @@ export function TaskProvider({children}: TypeChildrenNode){
         }
 
         setTaks([...tasks, obj])
+
+        toast.success('Tarefa Adicionada com Sucesso');
     }
     
     function editaNameTask(){
@@ -74,6 +77,8 @@ export function TaskProvider({children}: TypeChildrenNode){
                 return tarefa;
             })
         } )
+
+        toast.warning('Tarefa Editada com Sucesso');
     }
 
     function editaStatusTask(id: number) {
@@ -89,7 +94,7 @@ export function TaskProvider({children}: TypeChildrenNode){
         });
       }
 
-    async function removeTask(id: number){
+    function removeTask(id: number){
         // Remove uma tarefa baseada no id.
 
         if (!estadoInput && id === objInput.id){  
@@ -98,6 +103,8 @@ export function TaskProvider({children}: TypeChildrenNode){
         }
         const newObj = tasks.filter((tarefa) => tarefa.id !== id);
         setTaks(newObj);
+
+        toast.error('Tarefa Deletada com Sucesso')
     }
 
     function salvarLocal(){

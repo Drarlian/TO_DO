@@ -1,12 +1,14 @@
-import { useState } from 'react'
 import './App.css'
 import Tarefas from './components/Tarefas'
 import Input from './components/Input'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
   return (
     <div className="conteudo">
+      <ToastContainer/>
       <div className="titulo">
         <h1>Lista de Tarefas</h1>
       </div>
