@@ -1,4 +1,4 @@
-import {createContext, useState, useEffect} from 'react';
+import {createContext, useState} from 'react';
 import {ReactNode} from 'react';
 import { toast } from 'react-toastify';
 
@@ -27,7 +27,7 @@ export type Task = {
 export const TaskContext = createContext({} as Props);
 
 export function TaskProvider({children}: TypeChildrenNode){
-    const [tasks, setTaks] = useState<Task[]>(() => pegarLocal()); // Array de Objetos, onde cada objeto é uma tarefa.
+    const [tasks, setTaks] = useState<Task[]>(pegarLocal()); // Array de Objetos, onde cada objeto é uma tarefa.
 
     const [estadoInput, setEstadoInput] = useState<boolean>(true);  // Define se o Input vai estar em Modo Normal ou Modo de Edição.
     const [objInput, setObjInput] = useState<Task>({
@@ -35,10 +35,6 @@ export function TaskProvider({children}: TypeChildrenNode){
         name: 'None',
         status: false
     });  // Objeto contendo a tarefa que será editada no Input de Edição.
-
-    useEffect(() => {
-        salvarLocal();
-    }, [tasks]);
 
     function adicionaTask(name: string){
         //  Adiciona um tarefa ao array de tarefas.
@@ -51,14 +47,16 @@ export function TaskProvider({children}: TypeChildrenNode){
             newId = tasks.slice(-1)[0].id + 1;
         }
 
-
         const obj = {
             id: newId,
             name: name,
             status: false,
         }
 
-        setTaks([...tasks, obj])
+        setTaks(() => {
+            salvarLocal([...tasks, obj]);
+            return [...tasks, obj];
+        })
 
         toast.success('Tarefa Adicionada com Sucesso');
     }
@@ -69,13 +67,16 @@ export function TaskProvider({children}: TypeChildrenNode){
             O id para busca e o novo nome estão presentes no objInput.
         */
 
-        setTaks((prevTasks) => {
-            return prevTasks.map((tarefa) => {
-                if (tarefa.id === objInput.id){
-                    return {...tarefa, name: objInput.name};
-                }
-                return tarefa;
-            })
+        let tarefasAlteradas = tasks.map((tarefa) => {
+            if (tarefa.id === objInput.id){
+                return {...tarefa, name: objInput.name};
+            }
+            return tarefa;
+        })
+
+        setTaks(() => {
+            salvarLocal(tarefasAlteradas);
+            return tarefasAlteradas;
         } )
 
         toast.warning('Tarefa Editada com Sucesso');
@@ -83,14 +84,16 @@ export function TaskProvider({children}: TypeChildrenNode){
 
     function editaStatusTask(id: number) {
         // Procura pela tarefa no array, quando achar inverte o status da task.
+        let tarefasAlteradas = tasks.map((tarefa) => {
+            if (tarefa.id === id) {
+                return { ...tarefa, status: !tarefa.status };
+            }
+                return tarefa;
+        })
 
-        setTaks((prevTasks) => {
-            return prevTasks.map((task) => {
-                if (task.id === id) {
-                return { ...task, status: !task.status };
-                }
-                return task;
-          });
+        setTaks(() => {
+            salvarLocal(tarefasAlteradas);
+            return tarefasAlteradas
         });
       }
 
@@ -102,15 +105,18 @@ export function TaskProvider({children}: TypeChildrenNode){
             setEstadoInput(!estadoInput);
         }
         const newObj = tasks.filter((tarefa) => tarefa.id !== id);
-        setTaks(newObj);
+        setTaks(() => {
+            salvarLocal(newObj);
+            return newObj;
+        });
 
         toast.error('Tarefa Deletada com Sucesso')
     }
 
-    function salvarLocal(){
+    function salvarLocal(task: Task[]){
         // Salva as tarefas no LocalStorage.
 
-        localStorage.setItem('tarefas', JSON.stringify(tasks));
+        localStorage.setItem('tarefas', JSON.stringify(task));
     }
 
     function pegarLocal(){
@@ -118,9 +124,9 @@ export function TaskProvider({children}: TypeChildrenNode){
 
         let tarefasLocais = localStorage.getItem('tarefas');
         if (tarefasLocais){
-            // console.log(tarefasLocais);
             return JSON.parse(tarefasLocais);
         }
+        return [];
     }
 
     return <TaskContext.Provider value={{tasks, estadoInput, setEstadoInput, objInput, setObjInput, adicionaTask, editaNameTask, editaStatusTask, removeTask}}>{children}</TaskContext.Provider>

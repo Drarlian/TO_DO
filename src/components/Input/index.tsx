@@ -1,11 +1,13 @@
 import './style.css'
-import {useContext, useState, KeyboardEvent} from 'react';
+import {useContext, useState, KeyboardEvent, useEffect} from 'react';
 import { TaskContext } from '../../contexts/TaskContext';
 
 export function Input(){
 
     const {estadoInput, setEstadoInput, objInput, setObjInput, adicionaTask, editaNameTask} = useContext(TaskContext);
     const [valorInput, setValorInput] = useState<string>('');  // Valor do Input Normal, posteriormente será adicionado as tarefas.
+
+    const [validate, setValidate] = useState("");
 
     const keyPressNormal = (event: KeyboardEvent<HTMLInputElement>) => {
         // Ação a ser executada quando o 'Enter' for apertado durante o Input Normal.
@@ -27,10 +29,20 @@ export function Input(){
         }
     }
 
+    useEffect(() => {
+        
+        if(valorInput.length < 6) {
+            setValidate("red")
+
+        } else {
+            setValidate("green")
+        }
+    }, [valorInput])
+
     return (
         <>
             {estadoInput? (
-                <input type="text" value={valorInput} onChange={(e) => setValorInput(e.target.value)} onKeyDown={keyPressNormal} placeholder='Adicione uma tarefa aqui...' className='teste-input'></input>
+                <input style={{border: `1px solid ${validate}`}} type="text" value={valorInput} onChange={(e) => setValorInput(e.target.value)} onKeyDown={keyPressNormal} placeholder='Adicione uma tarefa aqui...' className='teste-input'></input>
             ): (
                 <input type="text" value={objInput.name} onChange={(e) => setObjInput({...objInput, name: e.target.value})} onKeyDown={keyPressEdit} placeholder='Edite sua tarefa...' className='teste-input'></input>
             )}

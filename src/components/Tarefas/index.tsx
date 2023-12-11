@@ -12,7 +12,7 @@ function Tarefas() {
         setEstadoInput(!estadoInput);
         setObjInput(obj);
     }
-    
+
     return (
     <div className='lista-tarefas'>
         {tasks.map((e) => (
